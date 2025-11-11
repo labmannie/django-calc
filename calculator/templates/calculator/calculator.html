@@ -102,12 +102,7 @@
             background-color: var(--equal-bg);
             color: var(--light-text-color);
             border: none;
-            grid-column: span 2;
-        }
-
-        /* Span for the zero key */
-        .key[value="0"] {
-            grid-column: span 2;
+            grid-column: span 4;
         }
 
     </style>
@@ -116,31 +111,26 @@
     <div class="calculator">
         <input type="text" class="calculator-screen" value="0" disabled />
         <div class="calculator-keys">
-            <!-- Row 1 -->
-            <button type="button" class="key all-clear" value="all-clear">AC</button>
-            <button type="button" class="key operator" value="/">÷</button>
-            <button type="button" class="key operator" value="*">×</button>
-            <button type="button" class="key operator" value="-">-</button>
-            
-            <!-- Row 2 -->
-            <button type="button" class="key" value="7">7</button>
-            <button type="button" class="key" value="8">8</button>
-            <button type="button" class="key" value="9">9</button>
-            <button type="button" class="key operator" value="+">+</button>
-
-            <!-- Row 3 -->
-            <button type="button" class="key" value="4">4</button>
-            <button type="button" class="key" value="5">5</button>
-            <button type="button" class="key" value="6">6</button>
-
-            <!-- Row 4 -->
             <button type="button" class="key" value="1">1</button>
             <button type="button" class="key" value="2">2</button>
             <button type="button" class="key" value="3">3</button>
+            <button type="button" class="key operator" value="+">+</button>
 
-            <!-- Row 5 -->
+            <button type="button" class="key" value="4">4</button>
+            <button type="button" class="key" value="5">5</button>
+            <button type="button" class="key" value="6">6</button>
+            <button type="button" class="key operator" value="-">-</button>
+
+            <button type="button" class="key" value="7">7</button>
+            <button type="button" class="key" value="8">8</button>
+            <button type="button" class="key" value="9">9</button>
+            <button type="button" class="key operator" value="*">×</button>
+
+            <button type="button" class="key all-clear" value="all-clear">AC</button>
             <button type="button" class="key" value="0">0</button>
             <button type="button" class="key" value=".">.</button>
+            <button type="button" class="key operator" value="/">÷</button>
+            
             <button type="button" class="key equal-sign" value="=">=</button>
         </div>
     </div>
