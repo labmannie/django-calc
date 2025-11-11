@@ -55,6 +55,31 @@ This project was created by **Lab Man NIE**, a lab worker at NIE.
 *   The main page will display a "Hello World" message from Shreyas.
 *   Navigate to `/calculator` to use the calculator.
 
+## Weather dashboard — API key
+
+The project includes a simple weather dashboard (`/weather/` or the URL configured in the project).
+
+The dashboard requires an OpenWeatherMap API key. Set the key in one of these ways. The app accepts several common variable names; use any of:
+
+```
+WEATHER_API_KEY=your_openweathermap_api_key_here
+OPENWEATHER_API_KEY=your_openweathermap_api_key_here
+OPEN_WEATHER_API_KEY=your_openweathermap_api_key_here
+OPENWEATHERMAP_API_KEY=your_openweathermap_api_key_here
+```
+
+1. Create a `.env` file at the project root (same directory as `manage.py`) with one of the lines above (no quotes).
+
+2. Or set the environment variable in your OS. On Windows PowerShell you can run:
+
+```powershell
+$env:WEATHER_API_KEY = "your_openweathermap_api_key_here"
+```
+
+After adding the key, restart the Django development server. The settings file already reads `.env` using `python-dotenv`.
+
+To obtain an API key, sign up at https://openweathermap.org/ and get a Free API key.
+
 ## Author
 
 *   **Lab Man NIE**

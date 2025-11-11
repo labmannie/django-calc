@@ -11,16 +11,42 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+import logging
+
+# Try to import python-dotenv's load_dotenv. If it's not installed, continue
+# without failing — the .env file won't be loaded and environment variables
+# must be provided by the environment instead.
+try:
+    from dotenv import load_dotenv
+    _DOTENV_AVAILABLE = True
+except Exception:  # ImportError or similar
+    load_dotenv = lambda *a, **k: None
+    _DOTENV_AVAILABLE = False
+    logging.getLogger(__name__).warning(
+        'python-dotenv not installed; .env file will not be loaded. Install with: pip install python-dotenv'
+    )
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+if _DOTENV_AVAILABLE:
+    load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-qbjcond*x20tyexw31qfamxhu%)#7ykwn=b$j2shuejs1ydri-'
+# Support several common env var names for the same API key so users who name
+# the variable differently won't run into a mismatch.
+WEATHER_API_KEY = (
+    os.getenv('WEATHER_API_KEY')
+    or os.getenv('OPENWEATHER_API_KEY')
+    or os.getenv('OPEN_WEATHER_API_KEY')
+    or os.getenv('OPENWEATHERMAP_API_KEY')
+)
+GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -38,6 +64,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'calculator',
+    'weather_dashboard',
+    'bootstrap4',
 ]
 
 MIDDLEWARE = [
