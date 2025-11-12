@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,30 +6,126 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather Dashboard</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'weather_dashboard/css/style.css' %}">
 </head>
-<body>
-    <div class="container">
-        <h1 class="mt-5">Weather Dashboard</h1>
-        <form method="post" class="form-inline mt-3">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="btn btn-primary ml-2">Get Weather</button>
-        </form>
-        {% if error %}
-            <div class="alert alert-danger mt-3" role="alert">
-                {{ error }}
-            </div>
-        {% endif %}
-        {% if weather_data %}
-            <div class="card mt-4">
-                <div class="card-body">
-                    <h5 class="card-title">{{ weather_data.city }}</h5>
-                    <p class="card-text">Temperature: {{ weather_data.temperature }}°C</p>
-                    <p class="card-text">Description: {{ weather_data.description }}</p>
-                    <img src="http://openweathermap.org/img/w/{{ weather_data.icon }}.png" alt="Weather icon">
+<body {% if weather_data %}data-condition="{{ weather_data.condition }}"{% endif %} class="page-root">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">Weather Dashboard</a>
+            <div class="ml-auto text-white small">Powered by OpenWeather</div>
+        </div>
+    </nav>
+
+    <main class="container my-4">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="card search-card p-3 mb-3 animate-up">
+                    <h5 class="card-title">Search city</h5>
+                    <form id="city-form" method="post" class="mt-2">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            {{ form.city }}
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Get Weather</button>
+                    </form>
+                    {% if error %}
+                        <div class="alert alert-danger mt-3" role="alert">{{ error }}</div>
+                    {% endif %}
+
+                    <div class="recent mt-3">
+                        <h6>Recent searches</h6>
+                        <ul id="recent-list" class="list-group list-group-flush">
+                            {% for c in recent %}
+                                <li class="list-group-item small recent-item" data-city="{{ c }}">{{ c }}</li>
+                            {% empty %}
+                                <li class="list-group-item small text-muted">No recent searches</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card info-card p-3">
+                    <h6>Quick Tips</h6>
+                    <ul class="small mb-0">
+                        <li>Use city name (e.g. "London" or "London,GB")</li>
+                        <li>New API keys may take a few minutes to activate</li>
+                        <li>Do not share your API key publicly</li>
+                    </ul>
                 </div>
             </div>
-        {% endif %}
+
+            <div class="col-lg-8">
+                {% if weather_data %}
+                    <div class="card weather-card p-4 animate-fade">
+                        <div class="d-flex align-items-center">
+                            <div class="mr-4">
+                                <h2 class="display-4 mb-0">{{ weather_data.temperature }}°C</h2>
+                                <div class="text-muted">Feels like {{ weather_data.feels_like }}°C</div>
+                                <div class="mt-2 text-capitalize lead">{{ weather_data.description }}</div>
+                            </div>
+                            <div class="ml-auto text-center">
+                                {% if weather_data.icon_url %}
+                                    <img src="{{ weather_data.icon_url }}" alt="icon" class="weather-icon weather-icon-anim">
+                                {% endif %}
+                                <div class="small text-muted">Updated: {{ weather_data.updated_at }}</div>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row text-center details">
+                            <div class="col-6 col-md-3">
+                                <div class="label">Humidity</div>
+                                <div class="value">{{ weather_data.humidity }}%</div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="label">Pressure</div>
+                                <div class="value">{{ weather_data.pressure }} hPa</div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="label">Wind</div>
+                                <div class="value">{{ weather_data.wind_speed }} m/s</div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="label">Coordinates</div>
+                                <div class="value small">{{ weather_data.coords.lon }}, {{ weather_data.coords.lat }}</div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-3 text-center">
+                            <div class="col-6">
+                                <div class="label">Sunrise</div>
+                                <div class="value">{{ weather_data.sunrise }}</div>
+                            </div>
+                            <div class="col-6">
+                                <div class="label">Sunset</div>
+                                <div class="value">{{ weather_data.sunset }}</div>
+                            </div>
+                        </div>
+
+                        <div class="mt-3 text-right small text-muted">
+                            {{ weather_data.city }}, {{ weather_data.country }}
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="card p-4 text-center empty-card">
+                        <h4 class="mb-1">No weather selected</h4>
+                        <p class="text-muted mb-0">Search for a city to see current weather details.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-light py-3 mt-4 animate-up">
+        <div class="container small text-muted">Built with ❤️ — OpenWeather data</div>
+    </footer>
+
+    <!-- Spinner overlay -->
+    <div id="spinner-overlay" class="spinner-overlay" aria-hidden="true">
+        <div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div>
     </div>
+
+    <script src="{% static 'weather_dashboard/js/main.js' %}"></script>
 </body>
 </html>
